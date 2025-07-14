@@ -1,0 +1,17 @@
+{
+  "name": "bun-backend",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/chrome": "^0.1.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "openai": "^5.9.0"
+  }
+}

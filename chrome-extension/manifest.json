@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Vin Scrapper AI",
+  "version": "1.0.0",
+  "description": "Scrape websites and ask AI about the content.",
+  "permissions": ["scripting", "storage", "activeTab"],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "side_panel": {
+    "default_path": "popup.html"
+  },
+  "host_permissions": ["<all_urls>"]
+}

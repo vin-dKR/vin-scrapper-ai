@@ -5,7 +5,7 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "jsx": "react-jsx",
-    "outDir": "dist",
+    "outDir": "dist2",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,

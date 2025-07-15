@@ -12,7 +12,7 @@ export default defineConfig({
     })
   ],
   build: {
-    outDir: 'dist',
+  outDir: 'dist',
     rollupOptions: {
       input: {
         popup: 'public/popup.html'

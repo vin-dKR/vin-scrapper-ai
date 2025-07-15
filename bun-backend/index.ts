@@ -11,16 +11,16 @@ const openai = new OpenAI({
 });
 
 app.post('/ask', async (req: Request, res: Response) => {
-    console.log("this is ask")
+  console.log("this is ask route")
   const { question, context } = req.body;
   if (!question || !context) {
-    return res.status(400).json({ error: 'Missing question or context' });
+    return res.status(400).json({ error: 'Missing question or website srapped context' });
   }
   try {
     const completion = await openai.chat.completions.create({
       model: 'gpt-4.1-mini',
       messages: [
-        { role: 'system', content: 'You are an assistant that answers questions about the following web page content.' },
+        { role: 'system', content: 'You are Vin Scrapper AI, an assistant that answers questions about the following web page content.' },
         { role: 'user', content: `Context: ${context}\n\nQuestion: ${question}` },
       ],
       max_tokens: 256,

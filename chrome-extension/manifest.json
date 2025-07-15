@@ -3,7 +3,7 @@
   "name": "Vin Scrapper AI",
   "version": "1.0.0",
   "description": "Scrape websites and ask AI about the content.",
-  "permissions": ["scripting", "storage", "activeTab"],
+  "permissions": ["scripting", "storage", "activeTab", "sidePanel"],
   "background": {
     "service_worker": "src/background.js"
   },

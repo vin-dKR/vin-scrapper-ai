@@ -174,6 +174,7 @@ const Popup = () => {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs: any[]) => {
         if (tabs[0]?.id) {
           chrome.sidePanel.open({ tabId: tabs[0].id });
+          window.close(); // Close the popup after opening side panel
         }
       });
     } else {
@@ -247,7 +248,7 @@ const Popup = () => {
   );
 
   return (
-    <div style={{ width: 350, height: isSidePanel ? '100vh' : 500, display: "flex", flexDirection: "column", background: "#000000", borderRadius: 12, boxShadow: "0 2px 12px #0001", overflow: "hidden", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ width: isSidePanel ? '100%' : 350, height: isSidePanel ? '100vh' : 500, display: "flex", flexDirection: "column", background: "#000000", borderRadius: 12, boxShadow: "0 2px 12px #0001", overflow: "hidden", fontFamily: "Inter, sans-serif" }}>
       {/* Header */}
       <div style={{ padding: 16, background: "#fff", borderBottom: "1px solid #eee", fontWeight: 600, fontSize: 18, letterSpacing: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span>Vin Scrapper AI</span>

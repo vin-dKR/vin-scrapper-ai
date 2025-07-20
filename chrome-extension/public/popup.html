@@ -1,38 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vin Scrapper AI</title>
-    <style>
-      body {
-        margin: 0;
-        background: transparent;
-        border-radius: 12px;
-      }
-      /* Thin scrollbar for all scrollable elements */
-      ::-webkit-scrollbar {
-        width: 6px;
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-      }
-      /* Remove up/down arrows from textarea (Chrome/Webkit) */
-      textarea::-webkit-resizer,
-      textarea::-webkit-scrollbar-button {
-        display: none;
-        height: 0;
-        width: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/popup.tsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vin Scrapper AI</title>
+  <style>
+    body {
+      margin: 0;
+      background: transparent;
+    }
+
+    /* Thin scrollbar for all scrollable elements */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    /* Remove up/down arrows from textarea (Chrome/Webkit) */
+    textarea::-webkit-resizer,
+    textarea::-webkit-scrollbar-button {
+      display: none;
+      height: 0;
+      width: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/popup.tsx"></script>
+</body>
+
 </html>

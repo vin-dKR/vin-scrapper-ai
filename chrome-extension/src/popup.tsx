@@ -202,6 +202,7 @@ const Popup = () => {
             language={match[1]}
             PreTag="div"
             customStyle={{ margin: 0, borderRadius: 6, fontSize: 14 }}
+            className="block-code"
             {...props}
           >
             {codeStr}
@@ -209,13 +210,19 @@ const Popup = () => {
         </div>
       ) : (
         <code
-          style={{
-            background: "#eee",
-            borderRadius: 4,
-            padding: "2px 4px",
-            fontSize: 13,
-            margin: 0,
-          }}
+        className="inline-code"
+        style={{
+          background: "#eee",
+          color: "#222",
+          borderRadius: 4,
+          padding: "2px 4px",
+          fontSize: 13,
+          margin: 0,
+          overflowX: "auto",
+          maxWidth: "100%", 
+          display: "inline-block",
+          verticalAlign: "middle",
+        }}
           {...props}
         >
           {children}
@@ -223,7 +230,7 @@ const Popup = () => {
       );
     },
     pre({ children, ...props }: { children?: React.ReactNode }) {
-      return <pre style={{ margin: 0, borderRadius: 6 }}>{children}</pre>;
+      return <pre className="inline-code" style={{ margin: 0, borderRadius: 6 }}>{children}</pre>;
     },
     p({ children, ...props }: { children?: React.ReactNode }) {
       return <p style={{ margin: 0, marginBottom: 2 }}>{children}</p>;
@@ -247,114 +254,125 @@ const Popup = () => {
     </svg>
   );
 
+  // SVG for side panel icon
+  const SidePanelSVG = (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="3" width="16" height="14" rx="3" fill="#4f8cff"/>
+      <rect x="6" y="5" width="2" height="10" rx="1" fill="#fff"/>
+      <rect x="12" y="5" width="2" height="10" rx="1" fill="#fff"/>
+    </svg>
+  );
+
   return (
-    <div style={{ width: isSidePanel ? '100%' : 350, height: isSidePanel ? '100vh' : 500, display: "flex", flexDirection: "column", background: "#000000", borderRadius: 12, boxShadow: "0 2px 12px #0001", overflow: "hidden", fontFamily: "Inter, sans-serif" }}>
-      {/* Header */}
-      <div style={{ padding: 16, background: "#fff", borderBottom: "1px solid #eee", fontWeight: 600, fontSize: 18, letterSpacing: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span>Vin Scrapper AI</span>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={handleScrape} disabled={loading} style={{ background: '#ececf1', border: 'none', borderRadius: 6, padding: '6px 12px', fontWeight: 500, cursor: loading ? 'not-allowed' : 'pointer', fontSize: 13 }}>
-            {loading ? "..." : "Scrape"}
-          </button>
-          {!isSidePanel && (
-            <button onClick={openSidePanel} title="Open in Side Panel" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, padding: '6px 12px', marginLeft: 4, color: '#4f8cff', fontWeight: 500 }}>
-              Open in Side Panel
+    <>
+      <div style={{ width: isSidePanel ? '100%' : 350, height: isSidePanel ? '100vh' : 500, display: "flex", flexDirection: "column", background: "#000000", boxShadow: "0 2px 12px #0001", overflow: "hidden", fontFamily: "Inter, sans-serif" }}>
+        {/* Header */}
+        <div style={{ padding: 16, background: "#18181a", borderBottom: "1px solid #333", fontWeight: 600, fontSize: 18, letterSpacing: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff' }}>
+          <span>Vin Scrapper AI</span>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={handleScrape} disabled={loading} style={{ background: '#ececf1', border: 'none', borderRadius: 6, padding: '6px 12px', fontWeight: 500, cursor: loading ? 'not-allowed' : 'pointer', fontSize: 13 }}>
+              {loading ? "..." : "Scrape"}
             </button>
-          )}
+            {!isSidePanel && (
+              <button onClick={openSidePanel} title="Open in Side Panel" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, padding: '6px 12px', marginLeft: 4, color: '#4f8cff', fontWeight: 500, display: 'flex', alignItems: 'center' }}>
+                {SidePanelSVG}
+              </button>
+            )}
+          </div>
         </div>
-      </div>
-      {/* Chat Area */}
-      <div style={{ flex: 1, overflowY: "auto", padding: 16, background: "#000000" }}>
-        {messages.length === 0 && (
-          <div style={{ color: '#888', textAlign: 'center', marginTop: 40 }}>
-            <div style={{ fontSize: 32, marginBottom: 8 }}>💬</div>
-            <div>Ask anything about this page!</div>
-          </div>
-        )}
-        {messages.map((msg, i) => (
-          <div key={i} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', marginBottom: 10, position: 'relative' }}>
-            <div style={{
-              maxWidth: '80%',
-              background: msg.role === 'user' ? '#4f8cff' : '#222',
-              color: msg.role === 'user' ? '#fff' : '#fff',
-              borderRadius: 16,
-              borderBottomRightRadius: msg.role === 'user' ? 4 : 16,
-              borderBottomLeftRadius: msg.role === 'user' ? 16 : 4,
-              padding: '10px 14px',
-              fontSize: 15,
-              boxShadow: msg.role === 'user' ? '0 2px 8px #4f8cff22' : '0 2px 8px #0001',
-              wordBreak: 'break-word',
-              whiteSpace: 'pre-wrap',
-              transition: 'background 0.2s',
-              position: 'relative',
-            }}>
-              <ReactMarkdown
-                remarkPlugins={[remarkMath]}
-                rehypePlugins={[rehypeKatex]}
-                components={markdownComponents}
-              >
-                {msg.content}
-              </ReactMarkdown>
-              {msg.role === 'ai' && (
-                <button
-                  onClick={() => handleCopyResponse(msg.content, i)}
-                  style={{ position: 'absolute', top: 8, right: 8, background: '#333', color: '#fff', border: 'none', borderRadius: 4, fontSize: 12, padding: '2px 8px', cursor: 'pointer', opacity: 0.8, display: 'flex', alignItems: 'center' }}
-                  title="Copy response"
-                >
-                  {copiedIdx === i ? "Copied!" : ClipboardSVG}
-                </button>
-              )}
+        {/* Chat Area */}
+        <div style={{ flex: 1, overflowY: "auto", padding: 16, background: "#000000" }}>
+          {messages.length === 0 && (
+            <div style={{ color: '#888', textAlign: 'center', marginTop: 40 }}>
+              <div style={{ fontSize: 32, marginBottom: 8 }}>💬</div>
+              <div>Ask anything about this page!</div>
             </div>
-          </div>
-        ))}
-        <div ref={chatEndRef} />
+          )}
+          {messages.map((msg, i) => (
+            <div key={i} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', marginBottom: 10, position: 'relative' }}>
+              <div style={{
+                maxWidth: '80%',
+                background: msg.role === 'user' ? '#4f8cff' : '#222',
+                color: msg.role === 'user' ? '#fff' : '#fff',
+                borderRadius: 16,
+                borderBottomRightRadius: msg.role === 'user' ? 4 : 16,
+                borderBottomLeftRadius: msg.role === 'user' ? 16 : 4,
+                padding: '10px 14px',
+                fontSize: 15,
+                boxShadow: msg.role === 'user' ? '0 2px 8px #4f8cff22' : '0 2px 8px #0001',
+                wordBreak: 'break-word',
+                whiteSpace: 'pre-wrap',
+                transition: 'background 0.2s',
+                position: 'relative',
+              }}>
+                <ReactMarkdown
+                  remarkPlugins={[remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
+                  components={markdownComponents}
+                >
+                  {msg.content}
+                </ReactMarkdown>
+                {msg.role === 'ai' && (
+                  <button
+                    onClick={() => handleCopyResponse(msg.content, i)}
+                    style={{ position: 'absolute', top: 8, right: 8, background: '#333', color: '#fff', border: 'none', borderRadius: 4, fontSize: 12, padding: '2px 8px', cursor: 'pointer', opacity: 0.8, display: 'flex', alignItems: 'center' }}
+                    title="Copy response"
+                  >
+                    {copiedIdx === i ? "Copied!" : ClipboardSVG}
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+          <div ref={chatEndRef} />
+        </div>
+        {/* Input Area */}
+        <form onSubmit={handleSend} style={{ display: 'flex', alignItems: 'center', padding: 12, background: '#222', borderTop: '1px solid #333' }}>
+          <textarea
+            ref={textareaRef}
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Type your question..."
+            rows={1}
+            style={{
+              flex: 1,
+              resize: 'none',
+              border: 'none',
+              outline: 'none',
+              background: '#18181a',
+              color: '#fff',
+              borderRadius: 8,
+              padding: '10px 12px',
+              fontSize: 15,
+              marginRight: 8,
+              minHeight: 36,
+              maxHeight: 80,
+              boxShadow: '0 1px 2px #0001',
+            }}
+            disabled={loading}
+          />
+          <button
+            type="submit"
+            disabled={loading || !input.trim()}
+            style={{
+              background: '#4f8cff',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 8,
+              padding: '10px 18px',
+              fontWeight: 600,
+              fontSize: 15,
+              cursor: loading || !input.trim() ? 'not-allowed' : 'pointer',
+              transition: 'background 0.2s',
+              boxShadow: '0 2px 8px #4f8cff22',
+            }}
+          >
+            {loading ? '...' : 'Send'}
+          </button>
+        </form>
       </div>
-      {/* Input Area */}
-      <form onSubmit={handleSend} style={{ display: 'flex', alignItems: 'center', padding: 12, background: '#222', borderTop: '1px solid #333' }}>
-        <textarea
-          ref={textareaRef}
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Type your question..."
-          rows={1}
-          style={{
-            flex: 1,
-            resize: 'none',
-            border: 'none',
-            outline: 'none',
-            background: '#18181a',
-            color: '#fff',
-            borderRadius: 8,
-            padding: '10px 12px',
-            fontSize: 15,
-            marginRight: 8,
-            minHeight: 36,
-            maxHeight: 80,
-            boxShadow: '0 1px 2px #0001',
-          }}
-          disabled={loading}
-        />
-        <button
-          type="submit"
-          disabled={loading || !input.trim()}
-          style={{
-            background: '#4f8cff',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 8,
-            padding: '10px 18px',
-            fontWeight: 600,
-            fontSize: 15,
-            cursor: loading || !input.trim() ? 'not-allowed' : 'pointer',
-            transition: 'background 0.2s',
-            boxShadow: '0 2px 8px #4f8cff22',
-          }}
-        >
-          {loading ? '...' : 'Send'}
-        </button>
-      </form>
-    </div>
+    </>
   );
 };
 

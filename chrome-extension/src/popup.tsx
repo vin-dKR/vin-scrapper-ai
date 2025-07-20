@@ -259,6 +259,94 @@ const Popup = () => {
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-panel-right-icon lucide-panel-right"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M15 3v18" /></svg>
   );
 
+  // Define shared style objects
+  const aiBubbleStyle = {
+    maxWidth: '80%',
+    background: '#222',
+    color: '#fff',
+    borderRadius: 16,
+    borderBottomLeftRadius: 4,
+    borderBottomRightRadius: 16,
+    padding: '10px 14px',
+    fontSize: 15,
+    boxShadow: '0 2px 8px #0001',
+    wordBreak: 'break-word' as const,
+    whiteSpace: 'pre-wrap',
+    transition: 'background 0.2s',
+    position: 'relative' as const,
+  };
+  const userBubbleStyle = {
+    maxWidth: '80%',
+    background: '#4f8cff',
+    color: '#fff',
+    borderRadius: 16,
+    borderBottomRightRadius: 4,
+    borderBottomLeftRadius: 16,
+    padding: '10px 14px',
+    fontSize: 15,
+    boxShadow: '0 2px 8px #4f8cff22',
+    wordBreak: 'break-word' as const,
+    whiteSpace: 'pre-wrap',
+    transition: 'background 0.2s',
+    position: 'relative' as const,
+  };
+  const aiCopyBtnStyle = {
+    position: 'absolute' as const,
+    bottom: -25,
+    left: 0,
+    background: '#333',
+    color: '#fff',
+    border: 'none',
+    borderRadius: 4,
+    fontSize: 12,
+    padding: '2px 8px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    opacity: 1,
+    zIndex: 2,
+  };
+
+  function AiMessage({ content, onCopy, copied, idx }: { content: string, onCopy: () => void, copied: boolean, idx: number }) {
+    return (
+      <div className="ai-bubble-container" style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: 24, position: 'relative' }}>
+        <div style={aiBubbleStyle}>
+          <ReactMarkdown
+            remarkPlugins={[remarkMath]}
+            rehypePlugins={[rehypeKatex]}
+            components={markdownComponents}
+          >
+            {content}
+          </ReactMarkdown>
+        </div>
+        <button
+          onClick={onCopy}
+          className="ai-copy-btn"
+          style={aiCopyBtnStyle}
+          title="Copy response"
+        >
+          {copied ? "Copied!" : ClipboardSVG}
+        </button>
+      </div>
+    );
+  }
+
+  function UserMessage({ content }: { content: string }) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 24, position: 'relative' }}>
+        <div style={userBubbleStyle}>
+          <ReactMarkdown
+            remarkPlugins={[remarkMath]}
+            rehypePlugins={[rehypeKatex]}
+            components={markdownComponents}
+          >
+            {content}
+          </ReactMarkdown>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div style={{ width: isSidePanel ? '100%' : 350, height: isSidePanel ? '100vh' : 500, display: "flex", flexDirection: "column", background: "#000000", boxShadow: "0 2px 12px #0001", overflow: "hidden", fontFamily: "Inter, sans-serif" }}>
@@ -286,80 +374,15 @@ const Popup = () => {
           )}
           {messages.map((msg, i) => (
             msg.role === 'ai' ? (
-              <div key={i} className="ai-bubble-container" style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: 24, position: 'relative' }}>
-                <div style={{
-                  maxWidth: '80%',
-                  background: '#222',
-                  color: '#fff',
-                  borderRadius: 16,
-                  borderBottomLeftRadius: 4,
-                  borderBottomRightRadius: 16,
-                  padding: '10px 14px',
-                  fontSize: 15,
-                  boxShadow: '0 2px 8px #0001',
-                  wordBreak: 'break-word',
-                  whiteSpace: 'pre-wrap',
-                  transition: 'background 0.2s',
-                  position: 'relative',
-                }}>
-                  <ReactMarkdown
-                    remarkPlugins={[remarkMath]}
-                    rehypePlugins={[rehypeKatex]}
-                    components={markdownComponents}
-                  >
-                    {msg.content}
-                  </ReactMarkdown>
-                </div>
-                <button
-                  onClick={() => handleCopyResponse(msg.content, i)}
-                  className="ai-copy-btn"
-                  style={{
-                    position: 'absolute',
-                    bottom: -25,
-                    left: 0,
-                    background: '#333',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: 4,
-                    fontSize: 12,
-                    padding: '2px 8px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    opacity: 1,
-                    zIndex: 2
-                  }}
-                  title="Copy response"
-                >
-                  {copiedIdx === i ? "Copied!" : ClipboardSVG}
-                </button>
-              </div>
+              <AiMessage
+                key={i}
+                content={msg.content}
+                onCopy={() => handleCopyResponse(msg.content, i)}
+                copied={copiedIdx === i}
+                idx={i}
+              />
             ) : (
-              <div key={i} style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 24, position: 'relative' }}>
-                <div style={{
-                  maxWidth: '80%',
-                  background: '#4f8cff',
-                  color: '#fff',
-                  borderRadius: 16,
-                  borderBottomRightRadius: 4,
-                  borderBottomLeftRadius: 16,
-                  padding: '10px 14px',
-                  fontSize: 15,
-                  boxShadow: '0 2px 8px #4f8cff22',
-                  wordBreak: 'break-word',
-                  whiteSpace: 'pre-wrap',
-                  transition: 'background 0.2s',
-                  position: 'relative',
-                }}>
-                  <ReactMarkdown
-                    remarkPlugins={[remarkMath]}
-                    rehypePlugins={[rehypeKatex]}
-                    components={markdownComponents}
-                  >
-                    {msg.content}
-                  </ReactMarkdown>
-                </div>
-              </div>
+              <UserMessage key={i} content={msg.content} />
             )
           ))}
           <div ref={chatEndRef} />

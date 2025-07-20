@@ -189,7 +189,7 @@ const Popup = () => {
       const codeStr = String(children).replace(/\n$/, "");
       const idx = `${className}-${codeStr.slice(0, 10)}`;
       return !inline && match ? (
-        <div style={{ position: "relative" }}>
+        <div className="code-block-container" style={{ position: "relative" }}>
           <button
             onClick={() => handleCopyCode(codeStr, idx)}
             style={{ position: "absolute", top: 6, right: 8, zIndex: 2, background: "#222", color: "#fff", border: "none", borderRadius: 4, fontSize: 12, padding: "2px 8px", cursor: "pointer", opacity: 0.8, display: 'flex', alignItems: 'center' }}
@@ -210,19 +210,19 @@ const Popup = () => {
         </div>
       ) : (
         <code
-        className="inline-code"
-        style={{
-          background: "#eee",
-          color: "#222",
-          borderRadius: 4,
-          padding: "2px 4px",
-          fontSize: 13,
-          margin: 0,
-          overflowX: "auto",
-          maxWidth: "100%", 
-          display: "inline-block",
-          verticalAlign: "middle",
-        }}
+          className="inline-code"
+          style={{
+            background: "#eee",
+            color: "#222",
+            borderRadius: 4,
+            padding: "2px 4px",
+            fontSize: 13,
+            margin: 0,
+            overflowX: "auto",
+            maxWidth: "100%",
+            display: "inline-block",
+            verticalAlign: "middle",
+          }}
           {...props}
         >
           {children}
@@ -236,7 +236,7 @@ const Popup = () => {
       return <p style={{ margin: 0, marginBottom: 2 }}>{children}</p>;
     },
     ul({ children, ...props }: { children?: React.ReactNode }) {
-      return <ul style={{display: "flex", flexDirection: "column", margin: 0, marginBottom: 2, padding: 0 }}>{children}</ul>;
+      return <ul style={{ display: "flex", flexDirection: "column", margin: 0, marginBottom: 2, padding: 0 }}>{children}</ul>;
     },
     math({ value }: { value?: string }) {
       return <span style={{ margin: 0 }}>{value}</span>;
@@ -249,18 +249,14 @@ const Popup = () => {
   // SVG for clipboard
   const ClipboardSVG = (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="2" width="8" height="12" rx="2" stroke="#fff" strokeWidth="1.5" fill="#333"/>
-      <rect x="6" y="0.5" width="4" height="3" rx="1" stroke="#fff" strokeWidth="1.2" fill="#4f8cff"/>
+      <rect x="4" y="2" width="8" height="12" rx="2" stroke="#fff" strokeWidth="1.5" fill="#333" />
+      <rect x="6" y="0.5" width="4" height="3" rx="1" stroke="#fff" strokeWidth="1.2" fill="#4f8cff" />
     </svg>
   );
 
   // SVG for side panel icon
   const SidePanelSVG = (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="2" y="3" width="16" height="14" rx="3" fill="#4f8cff"/>
-      <rect x="6" y="5" width="2" height="10" rx="1" fill="#fff"/>
-      <rect x="12" y="5" width="2" height="10" rx="1" fill="#fff"/>
-    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-panel-right-icon lucide-panel-right"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M15 3v18" /></svg>
   );
 
   return (
@@ -289,40 +285,82 @@ const Popup = () => {
             </div>
           )}
           {messages.map((msg, i) => (
-            <div key={i} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', marginBottom: 10, position: 'relative' }}>
-              <div style={{
-                maxWidth: '80%',
-                background: msg.role === 'user' ? '#4f8cff' : '#222',
-                color: msg.role === 'user' ? '#fff' : '#fff',
-                borderRadius: 16,
-                borderBottomRightRadius: msg.role === 'user' ? 4 : 16,
-                borderBottomLeftRadius: msg.role === 'user' ? 16 : 4,
-                padding: '10px 14px',
-                fontSize: 15,
-                boxShadow: msg.role === 'user' ? '0 2px 8px #4f8cff22' : '0 2px 8px #0001',
-                wordBreak: 'break-word',
-                whiteSpace: 'pre-wrap',
-                transition: 'background 0.2s',
-                position: 'relative',
-              }}>
-                <ReactMarkdown
-                  remarkPlugins={[remarkMath]}
-                  rehypePlugins={[rehypeKatex]}
-                  components={markdownComponents}
-                >
-                  {msg.content}
-                </ReactMarkdown>
-                {msg.role === 'ai' && (
-                  <button
-                    onClick={() => handleCopyResponse(msg.content, i)}
-                    style={{ position: 'absolute', top: 8, right: 8, background: '#333', color: '#fff', border: 'none', borderRadius: 4, fontSize: 12, padding: '2px 8px', cursor: 'pointer', opacity: 0.8, display: 'flex', alignItems: 'center' }}
-                    title="Copy response"
+            msg.role === 'ai' ? (
+              <div key={i} className="ai-bubble-container" style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: 24, position: 'relative' }}>
+                <div style={{
+                  maxWidth: '80%',
+                  background: '#222',
+                  color: '#fff',
+                  borderRadius: 16,
+                  borderBottomLeftRadius: 4,
+                  borderBottomRightRadius: 16,
+                  padding: '10px 14px',
+                  fontSize: 15,
+                  boxShadow: '0 2px 8px #0001',
+                  wordBreak: 'break-word',
+                  whiteSpace: 'pre-wrap',
+                  transition: 'background 0.2s',
+                  position: 'relative',
+                }}>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkMath]}
+                    rehypePlugins={[rehypeKatex]}
+                    components={markdownComponents}
                   >
-                    {copiedIdx === i ? "Copied!" : ClipboardSVG}
-                  </button>
-                )}
+                    {msg.content}
+                  </ReactMarkdown>
+                </div>
+                <button
+                  onClick={() => handleCopyResponse(msg.content, i)}
+                  className="ai-copy-btn"
+                  style={{
+                    position: 'absolute',
+                    bottom: -25,
+                    left: 0,
+                    background: '#333',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 4,
+                    fontSize: 12,
+                    padding: '2px 8px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    opacity: 1,
+                    zIndex: 2
+                  }}
+                  title="Copy response"
+                >
+                  {copiedIdx === i ? "Copied!" : ClipboardSVG}
+                </button>
               </div>
-            </div>
+            ) : (
+              <div key={i} style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 24, position: 'relative' }}>
+                <div style={{
+                  maxWidth: '80%',
+                  background: '#4f8cff',
+                  color: '#fff',
+                  borderRadius: 16,
+                  borderBottomRightRadius: 4,
+                  borderBottomLeftRadius: 16,
+                  padding: '10px 14px',
+                  fontSize: 15,
+                  boxShadow: '0 2px 8px #4f8cff22',
+                  wordBreak: 'break-word',
+                  whiteSpace: 'pre-wrap',
+                  transition: 'background 0.2s',
+                  position: 'relative',
+                }}>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkMath]}
+                    rehypePlugins={[rehypeKatex]}
+                    components={markdownComponents}
+                  >
+                    {msg.content}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            )
           ))}
           <div ref={chatEndRef} />
         </div>
@@ -372,6 +410,39 @@ const Popup = () => {
           </button>
         </form>
       </div>
+      <style>
+        {`
+          .inline-code::-webkit-scrollbar {
+            height: 4px;
+            background: transparent;
+          }
+          .inline-code::-webkit-scrollbar-thumb {
+            background: #bbb;
+            border-radius: 2px;
+          }
+          .inline-code::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          .block-code pre::-webkit-scrollbar {
+            height: 4px;
+            background: transparent;
+          }
+          .block-code pre::-webkit-scrollbar-thumb {
+            background: #bbb;
+            border-radius: 2px;
+          }
+          .block-code pre::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          .code-block-container .copy-btn {
+            opacity: 0.8;
+            transition: opacity 0.2s;
+          }
+          .ai-bubble-container .ai-copy-btn {
+            opacity: 1;
+          }
+        `}
+      </style>
     </>
   );
 };
